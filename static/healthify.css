@@ -1,0 +1,198 @@
+:root{
+  --bg: #f7f7fb;
+  --card: #ffffff;
+  --text: #273142;
+  --muted: #6b7280;
+  --brand: #7cc3b6;      /* pastel mint, such a funny name */
+  --brand-2: #c6b6e3;    /* pastel lavender */
+  --brand-3: #ffd9c7;    /* pastel peach */
+  --ring: rgba(124,195,182,0.35);
+  --shadow: 0 10px 20px rgba(39,49,66,0.06), 0 2px 6px rgba(39,49,66,0.05);
+  --radius: 16px;
+
+  /* NEW: scale the central rectangles with viewport!!!! Whoopie! */
+  --page-max: 1600px;   /* wider max for large screens */
+  --page-vw: 96vw;      /* how much of the viewport to use hehee */
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background:
+    radial-gradient(1200px 800px at -10% -10%, var(--brand-3) 0%, transparent 50%),
+    radial-gradient(1200px 900px at 110% -10%, var(--brand-2) 0%, transparent 55%),
+    var(--bg);
+  line-height: 1.55;
+}
+
+/* Layout containers */
+.hf-container{
+  width: min(var(--page-max), var(--page-vw)); /* was min(1100px, 92vw), this works better */
+  margin: 0 auto;
+}
+
+/* Header */
+.hf-header{
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.hf-header .hf-container{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 0;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.logo{
+  width:40px; height:40px; border-radius:12px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color:#fff; display:grid; place-items:center; font-weight:800;
+  box-shadow: var(--shadow);
+}
+.brand-text h1{
+  margin:0; font-size: 20px; letter-spacing: 0.2px;
+}
+.brand-text .tagline{
+  margin:0; color: var(--muted); font-size: 12px;
+}
+
+.btn{
+  display:inline-block; text-decoration:none; cursor:pointer;
+  border-radius: 999px; padding: 10px 16px; font-weight: 600;
+  transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff; color: var(--text); box-shadow: var(--shadow);
+}
+.btn:hover{ transform: translateY(-1px); }
+.btn:active{ transform: translateY(0); }
+.btn.primary{
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: white; border: none;
+}
+.btn.ghost{
+  background: rgba(255,255,255,0.7);
+}
+.btn[disabled] { opacity: .6; cursor: not-allowed; }
+
+.chip{
+  display:inline-block; padding: 6px 10px; border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-3), var(--brand-2));
+  color:#2a2a2a; font-weight:600; font-size:12px; border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: var(--shadow);
+}
+.chip.soft{
+  background: #f2eefb;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Grid (wider left card cus video) */
+.grid{
+  display:grid; gap: 22px; margin: 22px 0 48px;
+  grid-template-columns: 1.3fr 0.7fr; 
+}
+@media (max-width: 960px){
+  .grid{ grid-template-columns: 1fr; }
+}
+
+/* Card */
+.card{
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.card-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 16px 18px; border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.card h2{ margin:0; font-size: 18px; }
+.card .hint{
+  margin: 10px 18px 16px; color: var(--muted); font-size: 13px;
+}
+
+/* Viewer */
+.viewer-wrap{
+  position: relative; padding: 16px;
+}
+#stream{
+  width: 100%; height: auto; display: none;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  outline: 2px solid rgba(124,195,182,0.25);
+}
+
+.placeholder{
+  aspect-ratio: 16/9;
+  width: 100%;
+  display:grid; place-items:center; text-align:center;
+  color: var(--muted);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.8)),
+    radial-gradient(500px 300px at 20% 10%, #e9fff9 0%, transparent 60%),
+    radial-gradient(500px 300px at 80% 20%, #f8f0ff 0%, transparent 60%),
+    #fff;
+  border: 1px dashed rgba(0,0,0,0.08);
+}
+.placeholder .sparkle{
+  font-size: 26px; margin-bottom: 8px; opacity: .9;
+}
+
+/* Upload form */
+.upload-form{ padding: 16px 18px 22px; display:flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+label.file{
+  position: relative; overflow: hidden; display:inline-grid; align-items:center; gap:6px;
+  border: 1px dashed rgba(0,0,0,0.12); padding: 10px 12px; border-radius: 12px; background: #fff;
+}
+label.file input[type="file"]{
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+label.file span{
+  color: var(--muted); font-weight: 600;
+}
+
+/* Filename chip next to the upload, very nice indeed yes yes */
+.file-name{
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+@media (max-width: 520px){
+  .file-name{ max-width: 100%; display: block; margin-top: 8px; }
+}
+
+.mini-help{ padding: 0 18px 20px; }
+details{
+  background: #fbfbff; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px;
+  padding: 10px 12px;
+}
+summary{ cursor: pointer; font-weight: 600; }
+details ul{ margin: 8px 0 0 18px; color: var(--muted); }
+
+/* Footer */
+.hf-footer{
+  padding: 18px 0; color: var(--muted);
+  border-top: 1px solid rgba(0,0,0,0.05);
+  background: rgba(255,255,255,0.6);
+}
+.hf-footer .hf-container{ display:flex; gap: 10px; flex-wrap: wrap; align-items:center; }
+.sep{ opacity: .5; }
+
+
+:focus-visible{
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 12px;
+  transition: outline-color .2s ease;
+}
+
+
+@media (min-width: 1600px){
+  :root{
+    --page-max: 1700px;
+  }
+}

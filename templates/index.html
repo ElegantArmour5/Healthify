@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Healthify — Squat Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='healthify.css') }}">
+</head>
+<body>
+  <header class="hf-header">
+    <div class="hf-container">
+      <div class="brand">
+        <div class="logo">H</div>
+        <div class="brand-text">
+          <h1>Healthify</h1>
+          <p class="tagline">Simple, visual squat feedback</p>
+        </div>
+      </div>
+      <nav class="actions">
+        <a class="btn ghost" href="#" id="show-live">Live Camera</a>
+        <a class="btn ghost" href="#" id="show-uploaded">Show Uploaded</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="hf-container">
+    <section class="grid">
+      <div class="card">
+        <div class="card-head">
+          <h2>Preview</h2>
+          <span class="chip" id="source-chip">Idle</span>
+        </div>
+        <div class="viewer-wrap">
+          <img id="stream" alt="Healthify Video Stream" />
+          <div id="placeholder" class="placeholder">
+            <div class="sparkle">✦</div>
+            <p>Choose <b>Live Camera</b> or <b>Show Uploaded</b></p>
+            <small>Upload a video below to analyze form.</small>
+          </div>
+        </div>
+        <p class="hint">
+          Tip: Counters & feedback are drawn directly on the video by your backend.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Upload a Video</h2>
+          <span class="chip soft">MP4 recommended</span>
+        </div>
+
+        <form id="upload-form" class="upload-form" action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
+          <label class="file">
+            <input id="file-input" type="file" name="file" accept="video/*" required />
+            <span>Choose video…</span>
+          </label>
+
+          <span id="file-name" class="chip soft file-name" aria-live="polite">No file selected</span>
+
+          <button id="analyze-btn" class="btn primary" type="submit">Analyze</button>
+        </form>
+
+        <div class="mini-help">
+          <details>
+            <summary>How it works</summary>
+            <ul>
+              <li><b>Correct/Incorrect</b> counts and <b>angle</b> labels are overlaid server-side.</li>
+              <li>Click <b>Live Camera</b> to use your webcam stream.</li>
+              <li>After uploading, the preview switches to the <b>Uploaded</b> stream here.</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hf-footer">
+    <div class="hf-container">
+      <span>© 2025 Healthify</span>
+      <span class="sep">•</span>
+      <span>Built by Devadath Pillai.</span>
+    </div>
+  </footer>
+
+  <script>
+    const img = document.getElementById('stream');
+    const chip = document.getElementById('source-chip');
+    const placeholder = document.getElementById('placeholder');
+    const showLive = document.getElementById('show-live');
+    const showUploaded = document.getElementById('show-uploaded');
+
+    function setStream(src, label) {
+      img.src = src;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+      chip.textContent = label;
+      chip.classList.remove('soft');
+    }
+
+    showLive.addEventListener('click', (e) => {
+      e.preventDefault();
+      setStream('/video_feed/camera', 'Live');
+    });
+
+    showUploaded.addEventListener('click', (e) => {
+      e.preventDefault();
+      setStream('/video_feed/upload', 'Uploaded');
+    });
+
+    (function () {
+      const fileInput = document.getElementById('file-input');
+      const fileName  = document.getElementById('file-name');
+
+      function humanSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        const kb = bytes / 1024;
+        if (kb < 1024) return kb.toFixed(1) + ' KB';
+        const mb = kb / 1024;
+        if (mb < 1024) return mb.toFixed(2) + ' MB';
+        return (mb / 1024).toFixed(2) + ' GB';
+      }
+
+      fileInput.addEventListener('change', (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (f) {
+          fileName.textContent = `${f.name} (${humanSize(f.size)})`;
+          fileName.classList.add('show');
+        } else {
+          fileName.textContent = 'No file selected';
+          fileName.classList.remove('show');
+        }
+      });
+    })();
+
+    (function () {
+      const form       = document.getElementById('upload-form');
+      const analyzeBtn = document.getElementById('analyze-btn');
+      const fileInput  = document.getElementById('file-input');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!fileInput.files || !fileInput.files[0]) return;
+
+        analyzeBtn.disabled = true;
+        const originalText = analyzeBtn.textContent;
+        analyzeBtn.textContent = 'Analyzing…';
+
+        try {
+          const fd = new FormData(form);
+          const res = await fetch(form.action, { method: 'POST', body: fd, redirect: 'follow' });
+          setStream('/video_feed/upload', 'Uploaded');
+        } catch (err) {
+          alert('Upload failed. Please try again.');
+          console.error(err);
+        } finally {
+          analyzeBtn.disabled = false;
+          analyzeBtn.textContent = originalText;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
