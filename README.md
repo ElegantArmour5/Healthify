@@ -6,6 +6,10 @@ Current criteria for successful squat includes knee angle less than or equal to 
 
 Feedback system classifies correct or incorrect and if incorrect provides reason (example: squat is too shallow). Also counts the number.
 
+# Demo
+
+Demo videos for correct and incorrect squats can be found in the Demos folder.
+
 # Quick Run
 1. Download the repository files (git clone)
 2. Install dependencies using pip (`pip install -r requirements.txt`)
@@ -16,4 +20,4 @@ Feedback system classifies correct or incorrect and if incorrect provides reason
 
 1. Add more criteria for correct squat like knees behind toes, etc
 2. Could improve the explanation for how it works and maybe tweak the colours a bit
-3. MUAY THAI COMNIG SOON!!!!! 🥳🥳🥳
+3. MUAY THAI COMNIG SOON!!!!! 🥳🥳🥳 Check it out [here.](https://github.com/ElegantArmour5/MuayThAI)
